@@ -1,8 +1,534 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Great Things</title><link rel="icon" href="favicon.png" type="image/png"><style>
-*{margin:0;box-sizing:border-box}body{background:#08070f;overflow:hidden;color:#fff;font-family:Arial,Helvetica,sans-serif}
-canvas{position:fixed;inset:0}.corner{position:fixed;width:340px;height:340px;border-radius:50%}.tl{top:-120px;left:-120px;background:radial-gradient(circle,rgba(180,160,255,.18),transparent 70%)}.tr{top:-120px;right:-120px;background:radial-gradient(circle,rgba(180,160,255,.18),transparent 70%)}.bl{bottom:-120px;left:-120px;background:radial-gradient(circle,rgba(180,160,255,.18),transparent 70%)}.br{bottom:-120px;right:-120px;background:radial-gradient(circle,rgba(180,160,255,.18),transparent 70%)}
-.wrap{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px}
-.card{display:flex;gap:16px;align-items:center;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(15px);padding:18px;border-radius:18px}
-img{width:72px;height:72px;border-radius:50%}.badge{display:none;background:#ffffff22;padding:4px 8px;border-radius:8px;font-size:.8rem}#spotify,#game{display:none;margin-top:8px;font-size:.9rem}h1{font:400 clamp(18px,3vw,42px) Georgia,serif}
-</style></head><body><canvas id=c></canvas><div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div><div class=wrap><div class=card onclick="window.open('https://discord.com/users/1077273311211434105','_blank')" style="cursor:pointer"><img id=pfp><div><div><b id=user>Loading...</b> <span id=badge class=badge></span></div><div id=status></div><div id=spotify></div><div id=game></div></div></div><h1>We're going to make great things together</h1></div><script>
-async function u(){let r=await fetch("https://api.lanyard.rest/v1/users/1077273311211434105"),d=(await r.json()).data;pfp.src=`https://cdn.discordapp.com/avatars/${d.discord_user.id}/${d.discord_user.avatar}.png?size=256`;user.textContent=d.discord_user.display_name||d.discord_user.username;status.textContent=d.discord_status;let c=d.activities.find(a=>a.type==4);badge.style.display="none";if(c){badge.style.display="inline";badge.textContent=(c.emoji?c.emoji.name+" ":"")+(c.state||"")}spotify.style.display="none";if(d.spotify){spotify.style.display="block";spotify.textContent="🎵 "+d.spotify.song+" — "+d.spotify.artist}game.style.display="none";let g=d.activities.find(a=>a.type==0);if(g){game.style.display="block";game.textContent="🎮 "+g.name+" • "+(g.details||g.state||"Running")}}u();setInterval(u,15000);const cv=c,x=cv.getContext('2d');let W,H,D=[];function rs(){W=cv.width=innerWidth;H=cv.height=innerHeight;D=[...Array(220)].map(()=>({x:Math.random()*W,y:Math.random()*H,b:0,r:Math.random()*1.5+.4,s:Math.random()*.004+.002,a:Math.random()*28+10,p:Math.random()*6.28,m:(Math.random()-.5)*.12,o:Math.random()*.45+.08}));D.forEach(e=>e.b=e.y)}onresize=rs;rs();let t=0;(function f(){x.fillStyle="#08070f";x.fillRect(0,0,W,H);t+=.012;for(let d of D){d.x+=d.m;if(d.x>W)d.x=0;if(d.x<0)d.x=W;let y=d.b+Math.sin(t*d.s*80+d.p+d.x*.012)*d.a;x.beginPath();x.arc(d.x,y,d.r,0,7);x.fillStyle=`rgba(220,215,255,${d.o})`;x.fill()}requestAnimationFrame(f)})();</script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WLNG</title>
+<link rel="icon" href="favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#111116;
+  --bg2:#17171d;
+  --panel:#1c1c24;
+  --panel2:#212230;
+  --border:#2c2c38;
+  --text:#eae8f0;
+  --muted:#8d8a98;
+  --accent:#b89bff;
+  --accent-soft:rgba(184,155,255,.14);
+  --pink:#ff9fc0;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  background:radial-gradient(circle at 20% -10%, #1d1d27 0%, var(--bg) 45%) fixed;
+  color:var(--text);
+  font-family:'Inter',sans-serif;
+  min-height:100vh;
+  padding-bottom:80px;
+}
+h1,h2,h3,.brand,.navlink,.copy-btn{font-family:'Space Grotesk',sans-serif;}
+
+.discord-btn{
+  position:fixed;
+  top:18px;
+  right:18px;
+  z-index:200;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  background:var(--panel2);
+  border:1px solid var(--border);
+  color:var(--text);
+  text-decoration:none;
+  font-size:13px;
+  font-weight:600;
+  padding:9px 16px 9px 12px;
+  border-radius:999px;
+  transition:all .25s ease;
+  box-shadow:0 2px 10px rgba(0,0,0,.3);
+}
+.discord-btn:hover{
+  border-color:var(--accent);
+  box-shadow:0 0 0 1px var(--accent-soft), 0 6px 18px rgba(184,155,255,.18);
+  transform:translateY(-1px);
+}
+.discord-btn svg{width:18px;height:18px;fill:var(--accent);}
+
+header.top{
+  padding:90px 6vw 30px;
+}
+.brand{
+  font-size:34px;
+  font-weight:700;
+  letter-spacing:.5px;
+}
+.brand span{color:var(--accent);}
+
+nav#nav{
+  position:sticky;
+  top:0;
+  z-index:150;
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  padding:14px 6vw;
+  background:rgba(17,17,22,.85);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);
+}
+.nav-group{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-right:14px;}
+.nav-group-label{
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  color:var(--muted);
+  margin-right:4px;
+}
+.navlink{
+  font-size:13px;
+  color:var(--muted);
+  text-decoration:none;
+  padding:6px 12px;
+  border-radius:8px;
+  border:1px solid transparent;
+  transition:all .2s ease;
+}
+.navlink:hover{
+  color:var(--text);
+  border-color:var(--border);
+  background:var(--panel);
+}
+
+main{padding:10px 6vw 0;}
+
+.category-block{
+  margin-top:54px;
+}
+.category-title{
+  font-size:13px;
+  text-transform:uppercase;
+  letter-spacing:2px;
+  color:var(--accent);
+  margin-bottom:6px;
+}
+
+.section{
+  margin-top:34px;
+  scroll-margin-top:80px;
+  opacity:0;
+  transform:translateY(14px);
+  transition:opacity .5s ease, transform .5s ease;
+}
+.section.in{opacity:1;transform:translateY(0);}
+
+.section-title{
+  font-size:22px;
+  font-weight:600;
+  margin-bottom:16px;
+  color:var(--text);
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(220px, 1fr));
+  gap:18px;
+}
+
+.card{
+  background:var(--panel);
+  border:1px solid var(--border);
+  clip-path:polygon(14px 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%, 0 14px);
+  overflow:hidden;
+  opacity:0;
+  transform:translateY(16px) scale(.98);
+  transition:opacity .45s ease, transform .45s ease, box-shadow .25s ease, border-color .25s ease;
+}
+.card.in{opacity:1;transform:translateY(0) scale(1);}
+.card:hover{
+  transform:translateY(-4px) scale(1.015);
+  border-color:var(--accent);
+  box-shadow:0 10px 26px rgba(0,0,0,.4), 0 0 0 1px var(--accent-soft);
+}
+
+.embed-wrap{
+  width:100%;
+  aspect-ratio:1/1;
+  background:#0c0c10;
+  position:relative;
+  overflow:hidden;
+}
+.embed-wrap iframe{
+  width:100%;
+  height:100%;
+  border:0;
+  display:block;
+}
+.embed-fallback{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  font-size:12px;
+  color:var(--muted);
+  padding:10px;
+}
+
+.pfp-card img{
+  width:100%;
+  aspect-ratio:1/1;
+  object-fit:cover;
+  display:block;
+  transition:transform .4s ease;
+}
+.pfp-card:hover img{transform:scale(1.06);}
+
+.card-body{
+  padding:12px 14px 14px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.tags{display:flex;flex-wrap:wrap;gap:6px;}
+.tag{
+  font-size:11px;
+  background:var(--accent-soft);
+  color:var(--pink);
+  border:1px solid rgba(255,159,192,.25);
+  padding:3px 9px;
+  border-radius:999px;
+  white-space:nowrap;
+}
+
+.link-row, .name-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+}
+.link-text{
+  font-size:11px;
+  color:var(--muted);
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  flex:1;
+}
+.pfp-name{
+  font-size:13px;
+  color:var(--text);
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  flex:1;
+}
+
+.copy-btn{
+  flex-shrink:0;
+  font-size:11px;
+  font-weight:600;
+  background:var(--panel2);
+  color:var(--text);
+  border:1px solid var(--border);
+  padding:6px 11px;
+  border-radius:7px;
+  cursor:pointer;
+  transition:all .2s ease;
+}
+.copy-btn:hover{
+  border-color:var(--accent);
+  background:var(--accent-soft);
+  color:var(--accent);
+}
+.copy-btn.copied{
+  border-color:var(--pink);
+  color:var(--pink);
+  background:rgba(255,159,192,.1);
+}
+
+#status{
+  padding:60px 0;
+  text-align:center;
+  color:var(--muted);
+  font-size:13px;
+  letter-spacing:.5px;
+}
+.status-error{color:var(--pink);}
+</style>
+</head>
+<body>
+
+<a class="discord-btn" href="https://discord.gg/your-invite" target="_blank" rel="noopener">
+<svg viewBox="0 0 24 24"><path d="M20.317 4.369A19.791 19.791 0 0016.558 3c-.21.375-.444.875-.608 1.273a18.27 18.27 0 00-7.9 0C7.886 3.875 7.65 3.375 7.44 3a19.736 19.736 0 00-3.76 1.37C1.5 8.03.9 11.6 1.2 15.117a19.9 19.9 0 006.073 3.075c.49-.67.927-1.382 1.304-2.13-.717-.27-1.404-.6-2.054-.984.172-.126.34-.258.503-.395a14.16 14.16 0 0012.04 0c.164.137.331.27.503.395-.65.385-1.337.715-2.054.985a16.5 16.5 0 001.304 2.13 19.83 19.83 0 006.077-3.076c.36-4.08-.61-7.61-2.58-10.748zM8.68 13.33c-.83 0-1.51-.77-1.51-1.72 0-.95.665-1.72 1.51-1.72.853 0 1.526.78 1.51 1.72 0 .95-.657 1.72-1.51 1.72zm6.64 0c-.83 0-1.51-.77-1.51-1.72 0-.95.665-1.72 1.51-1.72.853 0 1.526.78 1.51 1.72 0 .95-.65 1.72-1.51 1.72z"/></svg>
+Discord
+</a>
+
+<header class="top">
+  <div class="brand">WLNG<span>.</span></div>
+</header>
+
+<nav id="nav"></nav>
+
+<main id="app">
+  <div id="status">loading repo contents...</div>
+</main>
+
+<script>
+const CONFIG = {
+  owner: "archeville",
+  repo: "WLNG",
+  branch: "main"
+};
+
+function cdnUrl(path){
+  return `https://cdn.jsdelivr.net/gh/${CONFIG.owner}/${CONFIG.repo}@${CONFIG.branch}/${path.split("/").map(encodeURIComponent).join("/")}`;
+}
+
+async function fetchFlatFileList(){
+  const url = `https://data.jsdelivr.com/v1/packages/gh/${CONFIG.owner}/${CONFIG.repo}@${CONFIG.branch}?structure=flat`;
+  const res = await fetch(url);
+  if(!res.ok) throw new Error(`${res.status} fetching file list`);
+  const data = await res.json();
+  return data.files || [];
+}
+
+function buildTree(files){
+  const tree = {};
+  files.forEach(f => {
+    const path = f.name.replace(/^\//, "");
+    const parts = path.split("/");
+    if(parts.length < 3) return;
+    const top = parts[0];
+    const sub = parts[1];
+    const filename = parts.slice(2).join("/");
+    if(top !== "gif" && top !== "pfp") return;
+    tree[top] = tree[top] || {};
+    tree[top][sub] = tree[top][sub] || [];
+    tree[top][sub].push(filename);
+  });
+  return tree;
+}
+
+function escapeHtml(str){
+  return String(str)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;");
+}
+
+function slugify(str){
+  return String(str).toLowerCase().trim().replace(/[^a-z0-9]+/g,"-").replace(/(^-|-$)/g,"");
+}
+
+function titleize(str){
+  return String(str).replace(/[-_]+/g," ").replace(/\.[a-zA-Z0-9]+$/,"").replace(/\b\w/g, c => c.toUpperCase());
+}
+
+function parseGifLine(line){
+  line = line.trim();
+  if(!line) return null;
+  const urlMatch = line.match(/^(\S+)/);
+  if(!urlMatch) return null;
+  const url = urlMatch[1];
+  const tags = [...line.matchAll(/\[([^\]]*)\]/g)].map(m => m[1]).filter(t => t.trim().length);
+  return { url, tags };
+}
+
+function makeSection(slug, title){
+  const section = document.createElement("section");
+  section.className = "section";
+  section.id = slug;
+  const h = document.createElement("h2");
+  h.className = "section-title";
+  h.textContent = title;
+  const grid = document.createElement("div");
+  grid.className = "grid";
+  section.appendChild(h);
+  section.appendChild(grid);
+  return { section, grid };
+}
+
+function makeGifCard(entry){
+  const card = document.createElement("div");
+  card.className = "card gif-card";
+  const tagsHtml = entry.tags.map(t => `<span class="tag">${escapeHtml(t)}</span>`).join("");
+  card.innerHTML = `
+    <div class="embed-wrap">
+      <iframe src="${escapeHtml(entry.url)}" loading="lazy" referrerpolicy="no-referrer" sandbox="allow-scripts allow-same-origin"></iframe>
+    </div>
+    <div class="card-body">
+      <div class="tags">${tagsHtml}</div>
+      <div class="link-row">
+        <span class="link-text">${escapeHtml(entry.url)}</span>
+        <button class="copy-btn" data-copy="${escapeHtml(entry.url)}">Copy</button>
+      </div>
+    </div>
+  `;
+  return card;
+}
+
+function makePfpCard(name, downloadUrl){
+  const card = document.createElement("div");
+  card.className = "card pfp-card";
+  const label = titleize(name);
+  card.innerHTML = `
+    <img src="${escapeHtml(downloadUrl)}" loading="lazy" alt="${escapeHtml(label)}">
+    <div class="card-body">
+      <div class="name-row">
+        <span class="pfp-name">${escapeHtml(label)}</span>
+        <button class="copy-btn" data-copy="${escapeHtml(downloadUrl)}">Copy</button>
+      </div>
+    </div>
+  `;
+  return card;
+}
+
+function observeAndStagger(container, items){
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if(e.isIntersecting){
+        e.target.classList.add("in");
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  items.forEach((el, i) => {
+    el.style.transitionDelay = `${Math.min(i * 45, 500)}ms`;
+    observer.observe(el);
+  });
+  observer.observe(container);
+}
+
+function addNavGroup(label, links){
+  if(!links.length) return;
+  const nav = document.getElementById("nav");
+  const group = document.createElement("div");
+  group.className = "nav-group";
+  const lab = document.createElement("span");
+  lab.className = "nav-group-label";
+  lab.textContent = label;
+  group.appendChild(lab);
+  links.forEach(({slug, title}) => {
+    const a = document.createElement("a");
+    a.className = "navlink";
+    a.href = `#${slug}`;
+    a.textContent = title;
+    group.appendChild(a);
+  });
+  nav.appendChild(group);
+}
+
+async function loadGifs(app, tree){
+  const subfolders = tree.gif;
+  if(!subfolders) return;
+
+  const categoryWrap = document.createElement("div");
+  categoryWrap.className = "category-block";
+  categoryWrap.innerHTML = `<div class="category-title">Gifs</div>`;
+  app.appendChild(categoryWrap);
+
+  const navLinks = [];
+
+  for(const sub of Object.keys(subfolders)){
+    const filenames = subfolders[sub];
+    if(!filenames.length) continue;
+    const filename = filenames[0];
+
+    let text;
+    try{
+      text = await (await fetch(cdnUrl(`gif/${sub}/${filename}`))).text();
+    }catch(e){
+      console.warn(`could not fetch gif/${sub}/${filename}`, e);
+      continue;
+    }
+
+    const entries = text.split("\n").map(parseGifLine).filter(Boolean);
+    if(!entries.length) continue;
+
+    const slug = slugify(`gif-${sub}`);
+    const title = titleize(sub);
+    const { section, grid } = makeSection(slug, title);
+    entries.forEach(entry => grid.appendChild(makeGifCard(entry)));
+    categoryWrap.appendChild(section);
+    observeAndStagger(section, [...grid.children]);
+    navLinks.push({ slug, title });
+  }
+
+  addNavGroup("Gifs", navLinks);
+}
+
+async function loadPfps(app, tree){
+  const subfolders = tree.pfp;
+  if(!subfolders) return;
+
+  const categoryWrap = document.createElement("div");
+  categoryWrap.className = "category-block";
+  categoryWrap.innerHTML = `<div class="category-title">Pfp</div>`;
+  app.appendChild(categoryWrap);
+
+  const navLinks = [];
+
+  for(const sub of Object.keys(subfolders)){
+    const pngs = subfolders[sub].filter(name => /\.png$/i.test(name));
+    if(!pngs.length) continue;
+
+    const slug = slugify(`pfp-${sub}`);
+    const title = titleize(sub);
+    const { section, grid } = makeSection(slug, title);
+    pngs.forEach(name => grid.appendChild(makePfpCard(name, cdnUrl(`pfp/${sub}/${name}`))));
+    categoryWrap.appendChild(section);
+    observeAndStagger(section, [...grid.children]);
+    navLinks.push({ slug, title });
+  }
+
+  addNavGroup("Pfp", navLinks);
+}
+
+document.addEventListener("click", (e) => {
+  const btn = e.target.closest(".copy-btn");
+  if(!btn) return;
+  const value = btn.getAttribute("data-copy");
+  navigator.clipboard.writeText(value).then(() => {
+    const original = btn.textContent;
+    btn.textContent = "Copied";
+    btn.classList.add("copied");
+    setTimeout(() => {
+      btn.textContent = original;
+      btn.classList.remove("copied");
+    }, 1200);
+  });
+});
+
+(async function init(){
+  const app = document.getElementById("app");
+  const status = document.getElementById("status");
+
+  if(CONFIG.repo === "YOUR_REPO_NAME"){
+    status.textContent = "set CONFIG.repo at the top of the script";
+    status.classList.add("status-error");
+    return;
+  }
+
+  try{
+    const files = await fetchFlatFileList();
+    const tree = buildTree(files);
+    await Promise.all([loadGifs(app, tree), loadPfps(app, tree)]);
+    status.remove();
+  }catch(e){
+    status.textContent = "failed to load repo contents, check console";
+    status.classList.add("status-error");
+    console.error(e);
+  }
+})();
+</script>
+
+</body>
+</html>
