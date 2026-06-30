@@ -11,7 +11,6 @@
 <style>
 :root{
   --bg:#111116;
-  --bg2:#17171d;
   --panel:#1c1c24;
   --panel2:#212230;
   --border:#2c2c38;
@@ -22,7 +21,6 @@
   --pink:#ff9fc0;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-html{scroll-behavior:smooth;}
 body{
   background:radial-gradient(circle at 20% -10%, #1d1d27 0%, var(--bg) 45%) fixed;
   color:var(--text);
@@ -30,7 +28,7 @@ body{
   min-height:100vh;
   padding-bottom:80px;
 }
-h1,h2,h3,.brand,.navlink,.copy-btn{font-family:'Space Grotesk',sans-serif;}
+h1,h2,.brand,.copy-btn,.download-btn,.back-btn,.main-btn-label,.sub-btn-label{font-family:'Space Grotesk',sans-serif;}
 
 .discord-btn{
   position:fixed;
@@ -58,79 +56,114 @@ h1,h2,h3,.brand,.navlink,.copy-btn{font-family:'Space Grotesk',sans-serif;}
 }
 .discord-btn svg{width:18px;height:18px;fill:var(--accent);}
 
-header.top{
-  padding:90px 6vw 30px;
-}
-.brand{
-  font-size:34px;
+.brand-home{
+  position:fixed;
+  top:18px;
+  left:18px;
+  z-index:200;
+  font-size:18px;
   font-weight:700;
   letter-spacing:.5px;
+  cursor:pointer;
+  user-select:none;
+  background:var(--panel2);
+  border:1px solid var(--border);
+  padding:9px 16px;
+  border-radius:999px;
+  transition:all .25s ease;
 }
-.brand span{color:var(--accent);}
+.brand-home span{color:var(--accent);}
+.brand-home:hover{border-color:var(--accent);transform:translateY(-1px);}
 
-nav#nav{
-  position:sticky;
-  top:0;
-  z-index:150;
-  display:flex;
-  flex-wrap:wrap;
-  gap:8px;
-  padding:14px 6vw;
-  background:rgba(17,17,22,.85);
-  backdrop-filter:blur(10px);
-  border-bottom:1px solid var(--border);
+main{
+  max-width:1100px;
+  margin:0 auto;
+  padding:100px 6vw 0;
 }
-.nav-group{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-right:14px;}
-.nav-group-label{
-  font-size:11px;
-  text-transform:uppercase;
-  letter-spacing:1px;
+
+#app{transition:opacity .22s ease, transform .22s ease;}
+#app.leaving{opacity:0;transform:translateY(10px);}
+
+#status{
+  padding:60px 0;
+  text-align:center;
   color:var(--muted);
-  margin-right:4px;
-}
-.navlink{
   font-size:13px;
+  letter-spacing:.5px;
+}
+.status-error{color:var(--pink);}
+
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .45s ease, transform .45s ease;}
+.reveal.in{opacity:1;transform:translateY(0);}
+
+.home-screen{
+  display:flex;
+  gap:24px;
+  justify-content:center;
+  align-items:center;
+  min-height:60vh;
+  flex-wrap:wrap;
+}
+.main-btn{
+  width:240px;
+  height:240px;
+  background:var(--panel);
+  border:1px solid var(--border);
+  clip-path:polygon(18px 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 0 100%, 0 18px);
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:border-color .25s ease, box-shadow .25s ease, transform .25s ease, opacity .45s ease;
+}
+.main-btn:hover{
+  border-color:var(--accent);
+  box-shadow:0 10px 26px rgba(0,0,0,.4), 0 0 0 1px var(--accent-soft);
+  transform:translateY(-4px) scale(1.02);
+}
+.main-btn-label{font-size:24px;font-weight:700;color:var(--text);letter-spacing:1px;}
+
+.view-wrap{padding:0 0 40px;}
+.back-btn{
+  background:none;
+  border:1px solid var(--border);
   color:var(--muted);
-  text-decoration:none;
-  padding:6px 12px;
+  font-size:13px;
+  font-weight:600;
+  padding:8px 14px;
   border-radius:8px;
-  border:1px solid transparent;
+  cursor:pointer;
+  margin-bottom:20px;
   transition:all .2s ease;
 }
-.navlink:hover{
-  color:var(--text);
-  border-color:var(--border);
+.back-btn:hover{color:var(--accent);border-color:var(--accent);}
+
+.view-title{font-size:24px;font-weight:600;margin-bottom:22px;}
+
+.category-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(180px, 1fr));
+  gap:16px;
+}
+.sub-btn{
   background:var(--panel);
+  border:1px solid var(--border);
+  clip-path:polygon(14px 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%, 0 14px);
+  padding:26px 16px;
+  cursor:pointer;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:6px;
+  transition:border-color .25s ease, box-shadow .25s ease, transform .25s ease, opacity .45s ease;
 }
-
-main{padding:10px 6vw 0;}
-
-.category-block{
-  margin-top:54px;
+.sub-btn:hover{
+  border-color:var(--accent);
+  box-shadow:0 10px 26px rgba(0,0,0,.4), 0 0 0 1px var(--accent-soft);
+  transform:translateY(-3px);
 }
-.category-title{
-  font-size:13px;
-  text-transform:uppercase;
-  letter-spacing:2px;
-  color:var(--accent);
-  margin-bottom:6px;
-}
-
-.section{
-  margin-top:34px;
-  scroll-margin-top:80px;
-  opacity:0;
-  transform:translateY(14px);
-  transition:opacity .5s ease, transform .5s ease;
-}
-.section.in{opacity:1;transform:translateY(0);}
-
-.section-title{
-  font-size:22px;
-  font-weight:600;
-  margin-bottom:16px;
-  color:var(--text);
-}
+.sub-btn-label{font-size:15px;font-weight:600;color:var(--text);}
+.sub-btn-count{font-size:11px;color:var(--muted);}
 
 .grid{
   display:grid;
@@ -143,11 +176,8 @@ main{padding:10px 6vw 0;}
   border:1px solid var(--border);
   clip-path:polygon(14px 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%, 0 14px);
   overflow:hidden;
-  opacity:0;
-  transform:translateY(16px) scale(.98);
   transition:opacity .45s ease, transform .45s ease, box-shadow .25s ease, border-color .25s ease;
 }
-.card.in{opacity:1;transform:translateY(0) scale(1);}
 .card:hover{
   transform:translateY(-4px) scale(1.015);
   border-color:var(--accent);
@@ -157,36 +187,17 @@ main{padding:10px 6vw 0;}
 .embed-wrap{
   width:100%;
   aspect-ratio:1/1;
-  background:#0c0c10;
-  position:relative;
+  background:linear-gradient(145deg, #1d1d27, #15151b);
   overflow:hidden;
 }
-.embed-wrap iframe{
+.embed-wrap img{
   width:100%;
   height:100%;
-  border:0;
-  display:block;
-}
-.embed-fallback{
-  position:absolute;
-  inset:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  font-size:12px;
-  color:var(--muted);
-  padding:10px;
-}
-
-.pfp-card img{
-  width:100%;
-  aspect-ratio:1/1;
   object-fit:cover;
   display:block;
   transition:transform .4s ease;
 }
-.pfp-card:hover img{transform:scale(1.06);}
+.card:hover .embed-wrap img{transform:scale(1.06);}
 
 .card-body{
   padding:12px 14px 14px;
@@ -195,53 +206,29 @@ main{padding:10px 6vw 0;}
   gap:10px;
 }
 
-.tags{display:flex;flex-wrap:wrap;gap:6px;}
-.tag{
-  font-size:11px;
-  background:var(--accent-soft);
-  color:var(--pink);
-  border:1px solid rgba(255,159,192,.25);
-  padding:3px 9px;
-  border-radius:999px;
-  white-space:nowrap;
-}
-
-.link-row, .name-row{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:8px;
-}
-.link-text{
-  font-size:11px;
-  color:var(--muted);
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-  flex:1;
-}
-.pfp-name{
+.media-name{
   font-size:13px;
   color:var(--text);
   overflow:hidden;
   text-overflow:ellipsis;
   white-space:nowrap;
-  flex:1;
 }
 
-.copy-btn{
-  flex-shrink:0;
+.btn-row{display:flex;gap:8px;}
+
+.copy-btn, .download-btn{
+  flex:1;
   font-size:11px;
   font-weight:600;
   background:var(--panel2);
   color:var(--text);
   border:1px solid var(--border);
-  padding:6px 11px;
+  padding:7px 10px;
   border-radius:7px;
   cursor:pointer;
   transition:all .2s ease;
 }
-.copy-btn:hover{
+.copy-btn:hover, .download-btn:hover{
   border-color:var(--accent);
   background:var(--accent-soft);
   color:var(--accent);
@@ -251,15 +238,6 @@ main{padding:10px 6vw 0;}
   color:var(--pink);
   background:rgba(255,159,192,.1);
 }
-
-#status{
-  padding:60px 0;
-  text-align:center;
-  color:var(--muted);
-  font-size:13px;
-  letter-spacing:.5px;
-}
-.status-error{color:var(--pink);}
 </style>
 </head>
 <body>
@@ -269,14 +247,12 @@ main{padding:10px 6vw 0;}
 Discord
 </a>
 
-<header class="top">
-  <div class="brand">WLNG<span>.</span></div>
-</header>
+<div class="brand-home" data-action="home-brand">WLNG<span>.</span></div>
 
-<nav id="nav"></nav>
-
-<main id="app">
-  <div id="status">loading repo contents...</div>
+<main>
+  <div id="app">
+    <div id="status">loading repo contents...</div>
+  </div>
 </main>
 
 <script>
@@ -285,6 +261,8 @@ const CONFIG = {
   repo: "WLNG",
   branch: "main"
 };
+
+const state = { tree: null };
 
 function cdnUrl(path){
   return `https://cdn.jsdelivr.net/gh/${CONFIG.owner}/${CONFIG.repo}@${CONFIG.branch}/${path.split("/").map(encodeURIComponent).join("/")}`;
@@ -323,188 +301,195 @@ function escapeHtml(str){
     .replace(/"/g,"&quot;");
 }
 
-function slugify(str){
-  return String(str).toLowerCase().trim().replace(/[^a-z0-9]+/g,"-").replace(/(^-|-$)/g,"");
-}
-
 function titleize(str){
-  return String(str).replace(/[-_]+/g," ").replace(/\.[a-zA-Z0-9]+$/,"").replace(/\b\w/g, c => c.toUpperCase());
+  return String(str).replace(/\.[a-zA-Z0-9]+$/,"").replace(/[-_]+/g," ").trim().replace(/\b\w/g, c => c.toUpperCase());
 }
 
-function parseGifLine(line){
-  line = line.trim();
-  if(!line) return null;
-  const urlMatch = line.match(/^(\S+)/);
-  if(!urlMatch) return null;
-  const url = urlMatch[1];
-  const tags = [...line.matchAll(/\[([^\]]*)\]/g)].map(m => m[1]).filter(t => t.trim().length);
-  return { url, tags };
+async function downloadFile(url, filename){
+  try{
+    const res = await fetch(url);
+    const blob = await res.blob();
+    const blobUrl = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = blobUrl;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(blobUrl);
+  }catch(e){
+    console.error("download failed", e);
+    window.open(url, "_blank");
+  }
 }
 
-function makeSection(slug, title){
-  const section = document.createElement("section");
-  section.className = "section";
-  section.id = slug;
-  const h = document.createElement("h2");
-  h.className = "section-title";
-  h.textContent = title;
-  const grid = document.createElement("div");
-  grid.className = "grid";
-  section.appendChild(h);
-  section.appendChild(grid);
-  return { section, grid };
+function revealStagger(elements){
+  elements.forEach((el, i) => {
+    el.style.transitionDelay = `${Math.min(i * 40, 400)}ms`;
+  });
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      elements.forEach(el => el.classList.add("in"));
+    });
+  });
 }
 
-function makeGifCard(entry){
+function transitionTo(renderFn){
+  const app = document.getElementById("app");
+  app.classList.add("leaving");
+  setTimeout(() => {
+    app.innerHTML = "";
+    renderFn(app);
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => app.classList.remove("leaving"));
+    });
+  }, 220);
+}
+
+function extFor(main){
+  return main === "gif" ? /\.gif$/i : /\.png$/i;
+}
+
+function renderHome(app){
+  app.innerHTML = `
+    <div class="home-screen">
+      <button class="main-btn reveal" data-main="gif">
+        <span class="main-btn-label">Gifs</span>
+      </button>
+      <button class="main-btn reveal" data-main="pfp">
+        <span class="main-btn-label">Pfp</span>
+      </button>
+    </div>
+  `;
+  revealStagger([...app.querySelectorAll(".reveal")]);
+}
+
+function renderCategory(app, main){
+  const tree = state.tree;
+  const subfolders = Object.keys(tree[main] || {});
+  const title = main === "gif" ? "Gifs" : "Pfp";
+  const ext = extFor(main);
+
+  const wrap = document.createElement("div");
+  wrap.className = "view-wrap";
+  wrap.innerHTML = `
+    <button class="back-btn" data-action="home">&larr; Home</button>
+    <h2 class="view-title">${title}</h2>
+    <div class="category-grid"></div>
+  `;
+  const grid = wrap.querySelector(".category-grid");
+
+  subfolders.forEach(sub => {
+    const count = (tree[main][sub] || []).filter(f => ext.test(f)).length;
+    if(!count) return;
+    const btn = document.createElement("button");
+    btn.className = "sub-btn reveal";
+    btn.dataset.main = main;
+    btn.dataset.sub = sub;
+    btn.innerHTML = `
+      <span class="sub-btn-label">${escapeHtml(titleize(sub))}</span>
+      <span class="sub-btn-count">${count}</span>
+    `;
+    grid.appendChild(btn);
+  });
+
+  app.appendChild(wrap);
+  revealStagger([...wrap.querySelectorAll(".reveal")]);
+}
+
+function makeMediaCard(filename, cdnSrc){
   const card = document.createElement("div");
-  card.className = "card gif-card";
-  const tagsHtml = entry.tags.map(t => `<span class="tag">${escapeHtml(t)}</span>`).join("");
+  card.className = "card reveal";
+  const caption = titleize(filename);
   card.innerHTML = `
     <div class="embed-wrap">
-      <iframe src="${escapeHtml(entry.url)}" loading="lazy" referrerpolicy="no-referrer" sandbox="allow-scripts allow-same-origin"></iframe>
+      <img src="${escapeHtml(cdnSrc)}" loading="lazy" alt="${escapeHtml(caption)}">
     </div>
     <div class="card-body">
-      <div class="tags">${tagsHtml}</div>
-      <div class="link-row">
-        <span class="link-text">${escapeHtml(entry.url)}</span>
-        <button class="copy-btn" data-copy="${escapeHtml(entry.url)}">Copy</button>
+      <span class="media-name">${escapeHtml(caption)}</span>
+      <div class="btn-row">
+        <button class="copy-btn" data-copy="${escapeHtml(cdnSrc)}">Copy</button>
+        <button class="download-btn" data-url="${escapeHtml(cdnSrc)}" data-filename="${escapeHtml(filename)}">Download</button>
       </div>
     </div>
   `;
   return card;
 }
 
-function makePfpCard(name, downloadUrl){
-  const card = document.createElement("div");
-  card.className = "card pfp-card";
-  const label = titleize(name);
-  card.innerHTML = `
-    <img src="${escapeHtml(downloadUrl)}" loading="lazy" alt="${escapeHtml(label)}">
-    <div class="card-body">
-      <div class="name-row">
-        <span class="pfp-name">${escapeHtml(label)}</span>
-        <button class="copy-btn" data-copy="${escapeHtml(downloadUrl)}">Copy</button>
-      </div>
-    </div>
+function renderGrid(app, main, sub){
+  const tree = state.tree;
+  const ext = extFor(main);
+  const files = (tree[main][sub] || []).filter(f => ext.test(f));
+
+  const wrap = document.createElement("div");
+  wrap.className = "view-wrap";
+  wrap.innerHTML = `
+    <button class="back-btn" data-action="category" data-main="${main}">&larr; ${main === "gif" ? "Gifs" : "Pfp"}</button>
+    <h2 class="view-title">${escapeHtml(titleize(sub))}</h2>
+    <div class="grid"></div>
   `;
-  return card;
-}
+  const grid = wrap.querySelector(".grid");
 
-function observeAndStagger(container, items){
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if(e.isIntersecting){
-        e.target.classList.add("in");
-        observer.unobserve(e.target);
-      }
-    });
-  }, { threshold: 0.1 });
-
-  items.forEach((el, i) => {
-    el.style.transitionDelay = `${Math.min(i * 45, 500)}ms`;
-    observer.observe(el);
+  files.forEach(filename => {
+    const cdnSrc = cdnUrl(`${main}/${sub}/${filename}`);
+    grid.appendChild(makeMediaCard(filename, cdnSrc));
   });
-  observer.observe(container);
-}
 
-function addNavGroup(label, links){
-  if(!links.length) return;
-  const nav = document.getElementById("nav");
-  const group = document.createElement("div");
-  group.className = "nav-group";
-  const lab = document.createElement("span");
-  lab.className = "nav-group-label";
-  lab.textContent = label;
-  group.appendChild(lab);
-  links.forEach(({slug, title}) => {
-    const a = document.createElement("a");
-    a.className = "navlink";
-    a.href = `#${slug}`;
-    a.textContent = title;
-    group.appendChild(a);
-  });
-  nav.appendChild(group);
-}
-
-async function loadGifs(app, tree){
-  const subfolders = tree.gif;
-  if(!subfolders) return;
-
-  const categoryWrap = document.createElement("div");
-  categoryWrap.className = "category-block";
-  categoryWrap.innerHTML = `<div class="category-title">Gifs</div>`;
-  app.appendChild(categoryWrap);
-
-  const navLinks = [];
-
-  for(const sub of Object.keys(subfolders)){
-    const filenames = subfolders[sub];
-    if(!filenames.length) continue;
-    const filename = filenames[0];
-
-    let text;
-    try{
-      text = await (await fetch(cdnUrl(`gif/${sub}/${filename}`))).text();
-    }catch(e){
-      console.warn(`could not fetch gif/${sub}/${filename}`, e);
-      continue;
-    }
-
-    const entries = text.split("\n").map(parseGifLine).filter(Boolean);
-    if(!entries.length) continue;
-
-    const slug = slugify(`gif-${sub}`);
-    const title = titleize(sub);
-    const { section, grid } = makeSection(slug, title);
-    entries.forEach(entry => grid.appendChild(makeGifCard(entry)));
-    categoryWrap.appendChild(section);
-    observeAndStagger(section, [...grid.children]);
-    navLinks.push({ slug, title });
-  }
-
-  addNavGroup("Gifs", navLinks);
-}
-
-async function loadPfps(app, tree){
-  const subfolders = tree.pfp;
-  if(!subfolders) return;
-
-  const categoryWrap = document.createElement("div");
-  categoryWrap.className = "category-block";
-  categoryWrap.innerHTML = `<div class="category-title">Pfp</div>`;
-  app.appendChild(categoryWrap);
-
-  const navLinks = [];
-
-  for(const sub of Object.keys(subfolders)){
-    const pngs = subfolders[sub].filter(name => /\.png$/i.test(name));
-    if(!pngs.length) continue;
-
-    const slug = slugify(`pfp-${sub}`);
-    const title = titleize(sub);
-    const { section, grid } = makeSection(slug, title);
-    pngs.forEach(name => grid.appendChild(makePfpCard(name, cdnUrl(`pfp/${sub}/${name}`))));
-    categoryWrap.appendChild(section);
-    observeAndStagger(section, [...grid.children]);
-    navLinks.push({ slug, title });
-  }
-
-  addNavGroup("Pfp", navLinks);
+  app.appendChild(wrap);
+  revealStagger([...grid.children]);
 }
 
 document.addEventListener("click", (e) => {
-  const btn = e.target.closest(".copy-btn");
-  if(!btn) return;
-  const value = btn.getAttribute("data-copy");
-  navigator.clipboard.writeText(value).then(() => {
-    const original = btn.textContent;
-    btn.textContent = "Copied";
-    btn.classList.add("copied");
-    setTimeout(() => {
-      btn.textContent = original;
-      btn.classList.remove("copied");
-    }, 1200);
-  });
+  const copyBtn = e.target.closest(".copy-btn");
+  if(copyBtn){
+    const value = copyBtn.getAttribute("data-copy");
+    navigator.clipboard.writeText(value).then(() => {
+      const original = copyBtn.textContent;
+      copyBtn.textContent = "Copied";
+      copyBtn.classList.add("copied");
+      setTimeout(() => {
+        copyBtn.textContent = original;
+        copyBtn.classList.remove("copied");
+      }, 1200);
+    });
+    return;
+  }
+
+  const downloadBtn = e.target.closest(".download-btn");
+  if(downloadBtn){
+    downloadFile(downloadBtn.getAttribute("data-url"), downloadBtn.getAttribute("data-filename"));
+    return;
+  }
+
+  const brandHome = e.target.closest(".brand-home");
+  if(brandHome){
+    transitionTo(app => renderHome(app));
+    return;
+  }
+
+  const mainBtn = e.target.closest(".main-btn");
+  if(mainBtn){
+    const main = mainBtn.dataset.main;
+    transitionTo(app => renderCategory(app, main));
+    return;
+  }
+
+  const subBtn = e.target.closest(".sub-btn");
+  if(subBtn){
+    const { main, sub } = subBtn.dataset;
+    transitionTo(app => renderGrid(app, main, sub));
+    return;
+  }
+
+  const backBtn = e.target.closest(".back-btn");
+  if(backBtn){
+    if(backBtn.dataset.action === "home"){
+      transitionTo(app => renderHome(app));
+    }else if(backBtn.dataset.action === "category"){
+      transitionTo(app => renderCategory(app, backBtn.dataset.main));
+    }
+    return;
+  }
 });
 
 (async function init(){
@@ -519,9 +504,8 @@ document.addEventListener("click", (e) => {
 
   try{
     const files = await fetchFlatFileList();
-    const tree = buildTree(files);
-    await Promise.all([loadGifs(app, tree), loadPfps(app, tree)]);
-    status.remove();
+    state.tree = buildTree(files);
+    renderHome(app);
   }catch(e){
     status.textContent = "failed to load repo contents, check console";
     status.classList.add("status-error");
