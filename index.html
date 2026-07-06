@@ -220,6 +220,19 @@ main{
 .main-btn-icon{width:42px;height:42px;color:var(--accent);position:relative;z-index:1;}
 .main-btn-label{font-size:22px;font-weight:700;color:var(--text);letter-spacing:1px;position:relative;z-index:1;}
 
+.community-wrap{
+  display:inline-flex;
+  padding:2px;
+  border-radius:28px;
+  background:linear-gradient(90deg,#ff5f6d,#ffc371,#4dff9e,#4d9bff,#b89bff,#ff9fc0,#ff5f6d);
+  animation:rainbow-hue 6s linear infinite;
+}
+.community-wrap .main-btn{border-radius:26px;}
+@keyframes rainbow-hue{
+  0%{filter:hue-rotate(0deg);}
+  100%{filter:hue-rotate(360deg);}
+}
+
 .view-wrap{padding:0 0 40px;}
 .back-btn{
   display:inline-flex;
@@ -272,6 +285,39 @@ main{
   border:1px solid var(--border);
 }
 
+.search-wrap{
+  margin-bottom:18px;
+  opacity:0;
+  transform:translateY(10px);
+  transition:opacity .4s ease, transform .4s ease;
+}
+.search-wrap.in{opacity:1;transform:translateY(0);}
+.search-input{
+  width:100%;
+  max-width:320px;
+  background:var(--panel2);
+  border:1px solid var(--border);
+  color:var(--text);
+  font-family:'Inter',sans-serif;
+  font-size:13px;
+  padding:10px 16px;
+  border-radius:999px;
+  outline:none;
+  transition:border-color .2s ease, box-shadow .2s ease;
+}
+.search-input::placeholder{color:var(--muted);}
+.search-input:focus{
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px var(--accent-soft);
+}
+.search-empty{
+  color:var(--muted);
+  font-size:13px;
+  padding:20px 0;
+  margin:0;
+  display:none;
+}
+
 .grid{
   display:grid;
   grid-template-columns:repeat(auto-fill, minmax(220px, 1fr));
@@ -289,6 +335,11 @@ main{
   transform:translateY(-4px) scale(1.015);
   border-color:var(--accent);
   box-shadow:0 16px 34px rgba(0,0,0,.45), 0 0 0 1px var(--accent-soft);
+}
+.card.filtering-hidden{
+  opacity:0;
+  transform:translateY(8px) scale(.94);
+  pointer-events:none;
 }
 
 .embed-wrap{
@@ -354,7 +405,7 @@ main{
 <div class="glow glow-b"></div>
 
 <a class="discord-btn" href="https://discord.gg/TjW9v75Evt" target="_blank" rel="noopener">
-<svg viewBox="0 0 24 24"><path d="M20.317 4.369A19.791 19.791 0 0016.558 3c-.21.375-.444.875-.608 1.273a18.27 18.27 0 00-7.9 0C7.886 3.875 7.65 3.375 7.44 3a19.736 19.736 0 00-3.76 1.37C1.5 8.03.9 11.6 1.2 15.117a19.9 19.9 0 006.073 3.075c.49-.67.927-1.382 1.304-2.13-.717-.27-1.404-.6-2.054-.984.172-.126.34-.258.503-.395a14.16 14.16 0 0012.04 0c.164.137.331.27.503.395-.65.385-1.337.715-2.054.985a16.5 16.5 0 001.304 2.13 19.83 19.83 0 006.077-3.076c.36-4.08-.61-7.61-2.58-10.748zM8.68 13.33c-.83 0-1.51-.77-1.51-1.72 0-.95.665-1.72 1.51-1.72.853 0 1.526.78 1.51 1.72 0 .95-.657 1.72-1.51 1.72zm6.64 0c-.83 0-1.51-.77-1.51-1.72 0-.95.665-1.72 1.51-1.72.853 0 1.526.78 1.51 1.72 0 .95-.65 1.72-1.51 1.72z"/></svg>
+<svg viewBox="0 0 24 24"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.522 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/></svg>
 Discord
 </a>
 
@@ -377,8 +428,9 @@ const CONFIG = {
 };
 
 const ICONS = {
-  gif: `<svg class="main-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M9 9.5v5M14 9.5h-2.2c-.7 0-1.3.6-1.3 1.3v0c0 .7.6 1.3 1.3 1.3H13M17 9.5h-2.5v5M17 12h-2"/></svg>`,
-  pfp: `<svg class="main-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="9" cy="10" r="2.2"/><path d="M5 19l4.5-5 3 3.2L16 13l3 4.5"/></svg>`
+  gif: `<svg class="main-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M9.5 9v6l5-3z" fill="currentColor" stroke="none"/></svg>`,
+  pfp: `<svg class="main-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="9" cy="10" r="2.2"/><path d="M5 19l4.5-5 3 3.2L16 13l3 4.5"/></svg>`,
+  community: `<svg class="main-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8.5" cy="8.5" r="3"/><circle cx="16" cy="9" r="2.6"/><path d="M2.8 19.2c.6-3.3 3-5.5 5.7-5.5s5.1 2.2 5.7 5.5M14.8 19.2c.4-2.4 1.9-4.2 4-4.7"/></svg>`
 };
 
 function apiUrl(path){
@@ -450,6 +502,54 @@ function extFor(main){
   return main === "gif" ? /\.gif$/i : /\.(png|jpe?g)$/i;
 }
 
+function buildSearchBar(placeholder){
+  const searchWrap = document.createElement("div");
+  searchWrap.className = "search-wrap";
+  searchWrap.innerHTML = `<input type="text" class="search-input" placeholder="${escapeHtml(placeholder)}" autocomplete="off" spellcheck="false">`;
+  return searchWrap;
+}
+
+function filterCards(grid, query, emptyEl){
+  const q = query.trim().toLowerCase();
+  const cards = [...grid.children];
+  let visibleCount = 0;
+
+  cards.forEach(card => {
+    const name = card.querySelector(".media-name").textContent.toLowerCase();
+    const match = !q || name.includes(q);
+
+    if(match){
+      visibleCount++;
+      if(card.style.display === "none"){
+        card.style.display = "";
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => card.classList.remove("filtering-hidden"));
+        });
+      }else{
+        card.classList.remove("filtering-hidden");
+      }
+    }else if(!card.classList.contains("filtering-hidden")){
+      card.classList.add("filtering-hidden");
+      const onEnd = (ev) => {
+        if(ev.propertyName !== "opacity") return;
+        if(card.classList.contains("filtering-hidden")) card.style.display = "none";
+        card.removeEventListener("transitionend", onEnd);
+      };
+      card.addEventListener("transitionend", onEnd);
+    }
+  });
+
+  if(emptyEl) emptyEl.style.display = visibleCount === 0 ? "block" : "none";
+}
+
+function wireSearch(searchWrap, grid, emptyEl){
+  const input = searchWrap.querySelector(".search-input");
+  input.addEventListener("input", () => filterCards(grid, input.value, emptyEl));
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => searchWrap.classList.add("in"));
+  });
+}
+
 function renderHome(app){
   app.innerHTML = `
     <div class="home-screen">
@@ -461,6 +561,12 @@ function renderHome(app){
         ${ICONS.pfp}
         <span class="main-btn-label">Pfp</span>
       </button>
+      <div class="community-wrap reveal">
+        <button class="main-btn" data-main="community">
+          ${ICONS.community}
+          <span class="main-btn-label">Community</span>
+        </button>
+      </div>
     </div>
   `;
   revealStagger([...app.querySelectorAll(".reveal")]);
@@ -541,14 +647,69 @@ async function renderGrid(app, main, sub){
 
   const ext = extFor(main);
   const files = entries.filter(e => e.type === "file" && ext.test(e.name));
+
   const grid = document.createElement("div");
   grid.className = "grid";
+  files.forEach(file => grid.appendChild(makeMediaCard(file.name, file.download_url)));
 
-  files.forEach(file => {
-    grid.appendChild(makeMediaCard(file.name, file.download_url));
-  });
+  const loaderEl = wrap.querySelector(".loader-wrap");
 
-  wrap.querySelector(".loader-wrap").replaceWith(grid);
+  if(files.length){
+    const searchWrap = buildSearchBar("Search...");
+    const emptyEl = document.createElement("p");
+    emptyEl.className = "search-empty";
+    emptyEl.textContent = "No matches found.";
+    loaderEl.replaceWith(searchWrap);
+    wrap.appendChild(grid);
+    wrap.appendChild(emptyEl);
+    wireSearch(searchWrap, grid, emptyEl);
+  }else{
+    loaderEl.replaceWith(grid);
+  }
+
+  revealStagger([...grid.children]);
+}
+
+async function renderCommunityGrid(app){
+  const wrap = document.createElement("div");
+  wrap.className = "view-wrap";
+  wrap.innerHTML = `
+    <button class="back-btn" data-action="home">&larr; Home</button>
+    <h2 class="view-title">Community</h2>
+    <div class="loader-wrap"><div class="loader"><span></span><span></span><span></span></div></div>
+  `;
+  app.appendChild(wrap);
+
+  let entries;
+  try{
+    entries = await fetchDir("community");
+  }catch(e){
+    console.error("could not read community", e);
+    return;
+  }
+
+  const ext = /\.(jpe?g|png|gif)$/i;
+  const files = entries.filter(e => e.type === "file" && ext.test(e.name));
+
+  const grid = document.createElement("div");
+  grid.className = "grid";
+  files.forEach(file => grid.appendChild(makeMediaCard(file.name, file.download_url)));
+
+  const loaderEl = wrap.querySelector(".loader-wrap");
+
+  if(files.length){
+    const searchWrap = buildSearchBar("Search...");
+    const emptyEl = document.createElement("p");
+    emptyEl.className = "search-empty";
+    emptyEl.textContent = "No matches found.";
+    loaderEl.replaceWith(searchWrap);
+    wrap.appendChild(grid);
+    wrap.appendChild(emptyEl);
+    wireSearch(searchWrap, grid, emptyEl);
+  }else{
+    loaderEl.replaceWith(grid);
+  }
+
   revealStagger([...grid.children]);
 }
 
@@ -583,7 +744,11 @@ document.addEventListener("click", (e) => {
   const mainBtn = e.target.closest(".main-btn");
   if(mainBtn){
     const main = mainBtn.dataset.main;
-    transitionTo(app => renderCategory(app, main));
+    if(main === "community"){
+      transitionTo(app => renderCommunityGrid(app));
+    }else{
+      transitionTo(app => renderCategory(app, main));
+    }
     return;
   }
 
