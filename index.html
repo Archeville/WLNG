@@ -9,12 +9,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <meta property="og:title" content="WLNG">
-<meta property="og:description" content="WeLoveNekoGirls, a collection of gifs and pfp of cute anime girls with animal ears and cute tails.">
+<meta property="og:description" content="WeLoveNekoGirls, a collection of gifs and pfp of cute anime girls with animal ears and cute tails. made by temmm official">
 <meta property="og:image" content="https://archeville.github.io/WLNG/favicon.png">
 <meta property="og:type" content="website">
 <meta property="twitter:card" content="summary_large_image">
 <meta property="twitter:title" content="WLNG">
-<meta property="twitter:description" content="WeLoveNekoGirls, a collection of gifs and pfp of cute anime girls with animal ears and cute tails.">
+<meta property="twitter:description" content="WeLoveNekoGirls, a collection of gifs and pfp of cute anime girls with animal ears and cute tails. made by temmm official">
 <meta property="twitter:image" content="https://archeville.github.io/WLNG/favicon.png">
 
 <style>
@@ -253,6 +253,17 @@ main{
 
 .view-title{font-size:25px;font-weight:600;margin-bottom:24px;letter-spacing:.3px;}
 
+.section-label{
+  font-size:11px;
+  font-weight:600;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:10px;
+}
+
+.folder-section{margin-bottom:28px;}
+
 .category-grid{
   display:grid;
   grid-template-columns:repeat(auto-fill, minmax(180px, 1fr));
@@ -353,8 +364,10 @@ main{
   height:100%;
   object-fit:cover;
   display:block;
-  transition:transform .4s ease;
+  opacity:0;
+  transition:transform .4s ease, opacity .3s ease;
 }
+.embed-wrap img.loaded{opacity:1;}
 .card:hover .embed-wrap img{transform:scale(1.06);}
 
 .card-body{
@@ -364,13 +377,45 @@ main{
   gap:10px;
 }
 
+.name-row{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  min-width:0;
+}
 .media-name{
   font-size:13px;
   color:var(--text);
   overflow:hidden;
   text-overflow:ellipsis;
   white-space:nowrap;
+  min-width:0;
 }
+.media-name.expanded{
+  white-space:normal;
+  overflow:visible;
+  text-overflow:clip;
+  word-break:break-word;
+}
+.expand-btn{
+  flex-shrink:0;
+  width:18px;
+  height:18px;
+  border-radius:50%;
+  border:1px solid var(--border);
+  background:var(--panel2);
+  color:var(--muted);
+  font-size:11px;
+  line-height:1;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  padding:0;
+  transition:all .2s ease;
+}
+.expand-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft);}
+.expand-btn.show{display:flex;}
 
 .btn-row{display:flex;gap:8px;}
 
@@ -396,6 +441,50 @@ main{
   color:var(--pink);
   background:var(--pink-soft);
 }
+
+.cache-popup{
+  position:fixed;
+  top:50%;
+  right:18px;
+  transform:translateY(-50%) translateX(130%);
+  width:240px;
+  background:var(--panel2);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:16px;
+  z-index:250;
+  box-shadow:0 12px 30px rgba(0,0,0,.45);
+  transition:transform .45s ease, opacity .45s ease;
+  opacity:0;
+  pointer-events:none;
+}
+.cache-popup.in{
+  transform:translateY(-50%) translateX(0);
+  opacity:1;
+  pointer-events:auto;
+}
+.cache-popup-text{
+  font-size:12.5px;
+  color:var(--text);
+  line-height:1.45;
+  margin-bottom:12px;
+}
+.cache-popup-actions{display:flex;gap:8px;}
+.cache-btn{
+  flex:1;
+  font-size:12px;
+  font-weight:600;
+  padding:8px 10px;
+  border-radius:10px;
+  border:1px solid var(--border);
+  background:var(--panel);
+  color:var(--text);
+  cursor:pointer;
+  transition:all .2s ease;
+  font-family:'Space Grotesk',sans-serif;
+}
+.cache-btn:hover{border-color:var(--accent);background:var(--accent-soft);color:var(--accent);}
+.cache-btn.cache-yes{border-color:var(--accent);color:var(--accent);}
 </style>
 </head>
 <body>
@@ -414,6 +503,14 @@ Discord
   WLNG<span>.</span>
 </div>
 
+<div id="cache-popup" class="cache-popup">
+  <p class="cache-popup-text">Save gifs &amp; pfps in your browser cache so they load instantly and skip a request next time?</p>
+  <div class="cache-popup-actions">
+    <button class="cache-btn cache-yes" type="button">Yes</button>
+    <button class="cache-btn cache-no" type="button">No</button>
+  </div>
+</div>
+
 <main>
   <div id="app">
     <div class="loader-wrap"><div class="loader"><span></span><span></span><span></span></div></div>
@@ -426,6 +523,10 @@ const CONFIG = {
   repo: "WLNG",
   branch: "main"
 };
+
+const CACHE_NAME = "wlng-media-v1";
+const CACHE_PREF_KEY = "wlng_cache_pref";
+const blobMemory = new Map();
 
 const ICONS = {
   gif: `<svg class="main-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M9.5 9v6l5-3z" fill="currentColor" stroke="none"/></svg>`,
@@ -457,10 +558,47 @@ function titleize(str){
   return String(str).replace(/\.[a-zA-Z0-9]+$/,"").replace(/[-_]+/g," ").trim().replace(/\b\w/g, c => c.toUpperCase());
 }
 
+function getCachePref(){
+  try{ return localStorage.getItem(CACHE_PREF_KEY); }catch(e){ return null; }
+}
+function setCachePref(value){
+  try{ localStorage.setItem(CACHE_PREF_KEY, value); }catch(e){}
+}
+
+async function getMediaBlob(url){
+  if(blobMemory.has(url)) return blobMemory.get(url);
+
+  const pref = getCachePref();
+
+  if(pref === "yes" && "caches" in window){
+    try{
+      const cache = await caches.open(CACHE_NAME);
+      const cached = await cache.match(url);
+      if(cached){
+        const blob = await cached.blob();
+        blobMemory.set(url, blob);
+        return blob;
+      }
+    }catch(e){ console.error("cache read failed", e); }
+  }
+
+  const res = await fetch(url);
+  const blob = await res.blob();
+  blobMemory.set(url, blob);
+
+  if(pref === "yes" && "caches" in window){
+    try{
+      const cache = await caches.open(CACHE_NAME);
+      await cache.put(url, new Response(blob.slice(0), { headers: { "Content-Type": blob.type } }));
+    }catch(e){ console.error("cache write failed", e); }
+  }
+
+  return blob;
+}
+
 async function downloadFile(url, filename){
   try{
-    const res = await fetch(url);
-    const blob = await res.blob();
+    const blob = await getMediaBlob(url);
     const blobUrl = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = blobUrl;
@@ -550,6 +688,17 @@ function wireSearch(searchWrap, grid, emptyEl){
   });
 }
 
+function setupTruncation(grid){
+  [...grid.children].forEach(card => {
+    const nameEl = card.querySelector(".media-name");
+    const btn = card.querySelector(".expand-btn");
+    if(!nameEl || !btn) return;
+    if(nameEl.scrollWidth > nameEl.clientWidth + 1){
+      btn.classList.add("show");
+    }
+  });
+}
+
 function renderHome(app){
   app.innerHTML = `
     <div class="home-screen">
@@ -614,16 +763,30 @@ function makeMediaCard(filename, src){
   const caption = titleize(filename);
   card.innerHTML = `
     <div class="embed-wrap">
-      <img src="${escapeHtml(src)}" loading="lazy" alt="${escapeHtml(caption)}">
+      <img loading="lazy" alt="${escapeHtml(caption)}">
     </div>
     <div class="card-body">
-      <span class="media-name">${escapeHtml(caption)}</span>
+      <div class="name-row">
+        <span class="media-name">${escapeHtml(caption)}</span>
+        <button class="expand-btn" type="button" aria-label="Show full name">+</button>
+      </div>
       <div class="btn-row">
         <button class="copy-btn" data-copy="${escapeHtml(src)}">Copy</button>
         <button class="download-btn" data-url="${escapeHtml(src)}" data-filename="${escapeHtml(filename)}">Download</button>
       </div>
     </div>
   `;
+
+  const img = card.querySelector("img");
+  getMediaBlob(src).then(blob => {
+    img.src = URL.createObjectURL(blob);
+    img.classList.add("loaded");
+  }).catch(e => {
+    console.error("media load failed", src, e);
+    img.src = src;
+    img.classList.add("loaded");
+  });
+
   return card;
 }
 
@@ -668,49 +831,110 @@ async function renderGrid(app, main, sub){
   }
 
   revealStagger([...grid.children]);
+  requestAnimationFrame(() => setupTruncation(grid));
 }
 
-async function renderCommunityGrid(app){
+async function renderCommunityFolder(app, path){
+  const isRoot = path === "community";
+  const label = isRoot ? "Community" : titleize(path.split("/").pop());
+
   const wrap = document.createElement("div");
   wrap.className = "view-wrap";
   wrap.innerHTML = `
-    <button class="back-btn" data-action="home">&larr; Home</button>
-    <h2 class="view-title">Community</h2>
+    <button class="back-btn" data-action="${isRoot ? "home" : "community-back"}" data-path="${escapeHtml(path)}">&larr; ${isRoot ? "Home" : "Back"}</button>
+    <h2 class="view-title">${escapeHtml(label)}</h2>
     <div class="loader-wrap"><div class="loader"><span></span><span></span><span></span></div></div>
   `;
   app.appendChild(wrap);
 
   let entries;
   try{
-    entries = await fetchDir("community");
+    entries = await fetchDir(path);
   }catch(e){
-    console.error("could not read community", e);
+    console.error(`could not read ${path}`, e);
     return;
   }
 
   const ext = /\.(jpe?g|png|gif)$/i;
+  const dirs = entries.filter(e => e.type === "dir");
   const files = entries.filter(e => e.type === "file" && ext.test(e.name));
+  const hasBoth = dirs.length > 0 && files.length > 0;
 
-  const grid = document.createElement("div");
-  grid.className = "grid";
-  files.forEach(file => grid.appendChild(makeMediaCard(file.name, file.download_url)));
+  wrap.querySelector(".loader-wrap").remove();
 
-  const loaderEl = wrap.querySelector(".loader-wrap");
+  const revealTargets = [];
+  let grid = null;
+
+  if(dirs.length){
+    const folderSection = document.createElement("div");
+    folderSection.className = "folder-section";
+    if(hasBoth){
+      const lbl = document.createElement("div");
+      lbl.className = "section-label";
+      lbl.textContent = "Folders";
+      folderSection.appendChild(lbl);
+    }
+    const folderGrid = document.createElement("div");
+    folderGrid.className = "category-grid";
+    dirs.forEach(dir => {
+      const btn = document.createElement("button");
+      btn.className = "sub-btn reveal";
+      btn.dataset.communityPath = `${path}/${dir.name}`;
+      btn.innerHTML = `<span class="sub-btn-label">${escapeHtml(titleize(dir.name))}</span>`;
+      folderGrid.appendChild(btn);
+      revealTargets.push(btn);
+    });
+    folderSection.appendChild(folderGrid);
+    wrap.appendChild(folderSection);
+  }
 
   if(files.length){
+    if(hasBoth){
+      const lbl = document.createElement("div");
+      lbl.className = "section-label";
+      lbl.textContent = "Media";
+      wrap.appendChild(lbl);
+    }
+
     const searchWrap = buildSearchBar("Search...");
+    wrap.appendChild(searchWrap);
+
+    grid = document.createElement("div");
+    grid.className = "grid";
+    files.forEach(file => grid.appendChild(makeMediaCard(file.name, file.download_url)));
+    wrap.appendChild(grid);
+    revealTargets.push(...grid.children);
+
     const emptyEl = document.createElement("p");
     emptyEl.className = "search-empty";
     emptyEl.textContent = "No matches found.";
-    loaderEl.replaceWith(searchWrap);
-    wrap.appendChild(grid);
     wrap.appendChild(emptyEl);
+
     wireSearch(searchWrap, grid, emptyEl);
-  }else{
-    loaderEl.replaceWith(grid);
   }
 
-  revealStagger([...grid.children]);
+  revealStagger(revealTargets);
+  if(grid){
+    const g = grid;
+    requestAnimationFrame(() => setupTruncation(g));
+  }
+}
+
+function initCachePopup(){
+  const pref = getCachePref();
+  const popup = document.getElementById("cache-popup");
+  if(pref === "yes" || pref === "no") return;
+
+  setTimeout(() => popup.classList.add("in"), 800);
+
+  popup.querySelector(".cache-yes").addEventListener("click", () => {
+    setCachePref("yes");
+    popup.classList.remove("in");
+  });
+  popup.querySelector(".cache-no").addEventListener("click", () => {
+    setCachePref("no");
+    popup.classList.remove("in");
+  });
 }
 
 document.addEventListener("click", (e) => {
@@ -735,6 +959,14 @@ document.addEventListener("click", (e) => {
     return;
   }
 
+  const expandBtn = e.target.closest(".expand-btn");
+  if(expandBtn){
+    const nameEl = expandBtn.parentElement.querySelector(".media-name");
+    const expanded = nameEl.classList.toggle("expanded");
+    expandBtn.textContent = expanded ? "\u2013" : "+";
+    return;
+  }
+
   const brandHome = e.target.closest(".brand-home");
   if(brandHome){
     transitionTo(app => renderHome(app));
@@ -745,7 +977,7 @@ document.addEventListener("click", (e) => {
   if(mainBtn){
     const main = mainBtn.dataset.main;
     if(main === "community"){
-      transitionTo(app => renderCommunityGrid(app));
+      transitionTo(app => renderCommunityFolder(app, "community"));
     }else{
       transitionTo(app => renderCategory(app, main));
     }
@@ -754,17 +986,26 @@ document.addEventListener("click", (e) => {
 
   const subBtn = e.target.closest(".sub-btn");
   if(subBtn){
-    const { main, sub } = subBtn.dataset;
-    transitionTo(app => renderGrid(app, main, sub));
+    if(subBtn.dataset.communityPath){
+      const path = subBtn.dataset.communityPath;
+      transitionTo(app => renderCommunityFolder(app, path));
+    }else{
+      const { main, sub } = subBtn.dataset;
+      transitionTo(app => renderGrid(app, main, sub));
+    }
     return;
   }
 
   const backBtn = e.target.closest(".back-btn");
   if(backBtn){
-    if(backBtn.dataset.action === "home"){
+    const action = backBtn.dataset.action;
+    if(action === "home"){
       transitionTo(app => renderHome(app));
-    }else if(backBtn.dataset.action === "category"){
+    }else if(action === "category"){
       transitionTo(app => renderCategory(app, backBtn.dataset.main));
+    }else if(action === "community-back"){
+      const parent = backBtn.dataset.path.split("/").slice(0, -1).join("/");
+      transitionTo(app => renderCommunityFolder(app, parent));
     }
     return;
   }
@@ -779,6 +1020,7 @@ document.addEventListener("click", (e) => {
   }
 
   renderHome(app);
+  initCachePopup();
 })();
 </script>
 
