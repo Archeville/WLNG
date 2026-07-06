@@ -447,7 +447,7 @@ function transitionTo(renderFn){
 }
 
 function extFor(main){
-  return main === "gif" ? /\.gif$/i : /\.png$/i;
+  return main === "gif" ? /\.gif$/i : /\.(png|jpe?g)$/i;
 }
 
 function renderHome(app){
