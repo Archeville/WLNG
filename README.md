@@ -1,2 +1,4 @@
 # website changing
-repo will stay public most likely. new priv repo for new site soon
+website is still being built, please come back soon. 
+- new landing page
+- - new discord link
